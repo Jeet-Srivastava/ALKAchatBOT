@@ -28,7 +28,8 @@ export default function ChatRoom({ tabId }: ChatRoomProps) {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://127.0.0.1:8000/ws');
+    const WS_URL = import.meta.env.VITE_WS_URL || 'ws://127.0.0.1:8000/ws';
+    const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
