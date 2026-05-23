@@ -42,7 +42,6 @@ export default function ChatRoom({ tabId }: ChatRoomProps) {
           const lastMsg = newMessages[lastIndex];
           
           if (lastMsg && lastMsg.role === 'assistant' && lastMsg.isStreaming) {
-            // IMMUTABLE UPDATE: Create a new object instead of mutating the old one
             newMessages[lastIndex] = {
               ...lastMsg,
               content: lastMsg.content + data.content
@@ -66,7 +65,6 @@ export default function ChatRoom({ tabId }: ChatRoomProps) {
           const lastMsg = newMessages[lastIndex];
           
           if (lastMsg && lastMsg.role === 'assistant') {
-            // IMMUTABLE UPDATE here as well
             newMessages[lastIndex] = {
               ...lastMsg,
               isStreaming: false
@@ -99,47 +97,49 @@ export default function ChatRoom({ tabId }: ChatRoomProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-900">
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-            <span className="text-xs text-gray-500 mb-1 px-1">{msg.timestamp}</span>
-            <div 
-              className={`max-w-[80%] rounded-2xl px-5 py-3 ${
-                msg.role === 'user' 
-                  ? 'bg-blue-600 text-white rounded-br-none' 
-                  : 'bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700'
-              }`}
-            >
-              <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+    <div className="flex flex-col h-full bg-black">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+        <div className="max-w-3xl mx-auto space-y-6">
+          {messages.map((msg) => (
+            <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+              <span className="text-xs text-gray-500 mb-1 px-1">{msg.timestamp}</span>
+              <div 
+                className={`max-w-[85%] px-5 py-3 ${
+                  msg.role === 'user' 
+                    ? 'bg-gray-800 text-white rounded-2xl rounded-br-none' 
+                    : 'bg-transparent text-gray-200 border border-gray-800 rounded-2xl rounded-bl-none'
+                }`}
+              >
+                <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+              </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex items-start">
-            <div className="bg-gray-800 border border-gray-700 text-gray-400 rounded-2xl rounded-bl-none px-5 py-3 text-sm flex items-center gap-2">
-              <span className="animate-pulse">●</span>
-              <span className="animate-pulse delay-150">●</span>
-              <span className="animate-pulse delay-300">●</span>
+          ))}
+          {isTyping && (
+            <div className="flex items-start">
+              <div className="bg-transparent border border-gray-800 text-gray-500 rounded-2xl rounded-bl-none px-5 py-3 text-sm flex items-center gap-2">
+                <span className="animate-pulse">●</span>
+                <span className="animate-pulse delay-150">●</span>
+                <span className="animate-pulse delay-300">●</span>
+              </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+          )}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
-      <div className="p-4 bg-gray-900 border-t border-gray-800">
-        <form onSubmit={handleSend} className="flex gap-3 max-w-4xl mx-auto">
+      <div className="p-4 md:p-6 bg-black border-t border-gray-900">
+        <form onSubmit={handleSend} className="flex gap-3 max-w-3xl mx-auto">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 bg-gray-800 text-white placeholder-gray-400 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all visible"
+            placeholder="Message Alchemyst..."
+            className="flex-1 bg-gray-900 text-white placeholder-gray-500 border border-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:border-gray-600 transition-colors"
           />
           <button
             type="submit"
             disabled={!input.trim()}
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="bg-white text-black hover:bg-gray-200 disabled:opacity-50 disabled:hover:bg-white px-6 py-3 rounded-xl font-medium transition-colors"
           >
             Send
           </button>

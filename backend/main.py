@@ -28,8 +28,11 @@ async def stream_groq_response(websocket: WebSocket):
     try:
         history = chat_sessions[websocket]["history"]
         
+        # Keep the system prompt (index 0) + the last 10 messages
+        windowed_history = [history[0]] + history[1:][-10:] 
+        
         stream = await client.chat.completions.create(
-            messages=history,
+            messages=windowed_history, # <--- Now passing the safe, sliced context
             model="llama-3.1-8b-instant",
             temperature=0.7,
             stream=True
